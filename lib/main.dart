@@ -1,4 +1,5 @@
 import 'package:english_words/english_words.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -23,6 +24,12 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         "new_page": (context) => NewRote(),
+        "countWidget": (context) => CounterWidget(),
+        "TabBoxA": (context) => TabBoxA(),
+        "ParentWidget": (context) => ParentWidget(),
+        "ParentWidgetC": (context) => ParentWidgetC(),
+        "CupertinoTestRoute": (context) => CupertinoTestRoute(),
+        "TextStyleTest": (context) => TextStyleTest(),
       },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -121,6 +128,36 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             RandomWordWidget(),
+            FlatButton(
+                child: Text("Count widget"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "countWidget");
+                }),
+            FlatButton(
+                child: Text("TabBoxA"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "TabBoxA");
+                }),
+            FlatButton(
+                child: Text("ParentWidget"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "ParentWidget");
+                }),
+            FlatButton(
+                child: Text("ParentWidgetC"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "ParentWidgetC");
+                }),
+            FlatButton(
+                child: Text("CupertinoTestRoute"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "CupertinoTestRoute");
+                }),
+            FlatButton(
+                child: Text("TextStyleTest"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "TextStyleTest");
+                }),
           ],
         ),
       ),
@@ -191,4 +228,300 @@ class _CounterWidget extends State<CounterWidget> {
       ),
     );
   }
+
+  @override
+  void didUpdateWidget(CounterWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("didUpdateWidget");
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("deactivate");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print("dispose");
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    print("reassemble");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("didChangeDependencies");
+  }
 }
+
+class TabBoxA extends StatefulWidget {
+  TabBoxA({Key key}) : super(key: key);
+
+  @override
+  State createState() => new _TapBoxAState();
+}
+
+class _TapBoxAState extends State<TabBoxA> {
+  bool _active = false;
+
+  void _handleTap() {
+    setState(() {
+      _active = !_active;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new GestureDetector(
+      onTap: _handleTap,
+      child: new Container(
+        child: new Center(
+          child: new Text(
+            _active ? 'Active' : 'Inactive',
+            style: new TextStyle(fontSize: 32.0, color: Colors.white),
+          ),
+        ),
+        width: 200,
+        height: 200,
+        decoration: new BoxDecoration(
+            color: _active ? Colors.lightGreen[700] : Colors.grey[600]),
+      ),
+    );
+  }
+}
+
+class ParentWidget extends StatefulWidget {
+  @override
+  _ParentWidgetState createState() => new _ParentWidgetState();
+}
+
+class _ParentWidgetState extends State<ParentWidget> {
+  bool _active = false;
+
+  void _handleTabBoxChanged(bool newValue) {
+    setState(() {
+      this._active = newValue;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      child: new TabBoxB(active: _active, onChanged: _handleTabBoxChanged),
+    );
+  }
+}
+
+class TabBoxB extends StatelessWidget {
+  final bool active;
+  final ValueChanged<bool> onChanged;
+
+  TabBoxB({Key key, this.active: false, @required this.onChanged})
+      : super(key: key);
+
+  void _handleTop() {
+    onChanged(!active);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new GestureDetector(
+      onTap: _handleTop,
+      child: new Container(
+        child: new Center(
+          child: new Text(
+            active ? 'Active' : 'Inactive',
+            style: new TextStyle(fontSize: 32.0, color: Colors.grey),
+          ),
+        ),
+        width: 200,
+        height: 200,
+        decoration: new BoxDecoration(
+            color: active ? Colors.lightGreen[700] : Colors.grey[600]),
+      ),
+    );
+  }
+}
+
+//---------------------------- ParentWidget ----------------------------
+
+class ParentWidgetC extends StatefulWidget {
+  @override
+  _ParentWidgetCState createState() => new _ParentWidgetCState();
+}
+
+class _ParentWidgetCState extends State<ParentWidgetC> {
+  bool _active = false;
+
+  void _handleTapboxChanged(bool newValue) {
+    setState(() {
+      _active = newValue;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      child: new TapboxC(
+        active: _active,
+        onChanged: _handleTapboxChanged,
+      ),
+    );
+  }
+}
+
+class TapboxC extends StatefulWidget {
+  TapboxC({Key key, this.active: false, @required this.onChanged})
+      : super(key: key);
+
+  final bool active;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  _TapboxCState createState() => new _TapboxCState();
+}
+
+class _TapboxCState extends State<TapboxC> {
+  bool _highlight = false;
+
+  void _handleTapDown(TapDownDetails details) {
+    setState(() {
+      _highlight = true;
+    });
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    setState(() {
+      _highlight = false;
+    });
+  }
+
+  void _handleTapCancel() {
+    setState(() {
+      _highlight = false;
+    });
+  }
+
+  void _handleTap() {
+    widget.onChanged(!widget.active);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 在按下时添加绿色边框，当抬起时，取消高亮
+    return new GestureDetector(
+      onTapDown: _handleTapDown,
+      // 处理按下事件
+      onTapUp: _handleTapUp,
+      // 处理抬起事件
+      onTap: _handleTap,
+      onTapCancel: _handleTapCancel,
+      child: new Container(
+        child: new Center(
+          child: new Text(widget.active ? 'Active' : 'Inactive',
+              style: new TextStyle(fontSize: 32.0, color: Colors.white)),
+        ),
+        width: 200.0,
+        height: 200.0,
+        decoration: new BoxDecoration(
+          color: widget.active ? Colors.lightGreen[700] : Colors.grey[600],
+          border: _highlight
+              ? new Border.all(
+                  color: Colors.teal[700],
+                  width: 10.0,
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+}
+
+class CupertinoTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CupertinoNavigationBar(
+        middle: Text("Cupertino Demo"),
+      ),
+      body: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CupertinoButton(
+              color: CupertinoColors.activeBlue,
+              child: Text("Press"),
+              onPressed: () {}),
+          RaisedButton(
+            child: Text("RaisedButton"),
+            onPressed: () => {},
+          ),
+          FlatButton(
+            child: Text("RaisedButton"),
+            onPressed: () => {},
+            disabledColor: Colors.lightGreenAccent,
+            //按钮不可用时的颜色
+            hoverColor: Colors.lightGreenAccent,
+            //指针悬浮到按钮的颜色
+
+            color: Colors.blue,
+            highlightColor: Colors.blue[700],
+            //按下时的颜色
+            colorBrightness: Brightness.dark,
+            //按钮的主题
+            splashColor: Colors.grey,
+            //水波纹的颜色
+            padding: EdgeInsets.all(15),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(60)),
+          ),
+          IconButton(
+            icon: Icon(Icons.thumb_up),
+            onPressed: () => {},
+          ),
+        ],
+      )),
+    );
+  }
+}
+
+class TextStyleTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(
+        title: Text("TextStyleTest"),
+      ),
+      body: Center(
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: <Widget>[
+            Text(
+              "Hello world",
+              textAlign: TextAlign.start,
+            ),
+            Text(
+              "Hello world! I'm Jack. " * 6,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              "Hello world",
+              textDirection: TextDirection.rtl,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+ 
