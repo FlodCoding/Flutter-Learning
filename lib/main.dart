@@ -30,6 +30,8 @@ class MyApp extends StatelessWidget {
         "ParentWidgetC": (context) => ParentWidgetC(),
         "CupertinoTestRoute": (context) => CupertinoTestRoute(),
         "TextStyleTest": (context) => TextStyleTest(),
+        "RowPage": (context) => RowPage(),
+        "FlexLayoutTestRoute": (context) => FlexLayoutTestRoute(),
       },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -58,6 +60,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  bool _switchSelected = true; //维护单选开关状态
+  bool _checkboxSelected = true; //维护复选框状态
+
+  TextEditingController _nameController = new TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -71,6 +77,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _nameController.addListener(() {
+      // print(_nameController.text);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -78,6 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    String icons = "";
+    icons += "\uE914";
+// error: &#xE000; or 0xE000 or E000
+    icons += " \uE000";
+// fingerprint: &#xE90D; or 0xE90D or E90D
+    icons += " \uE90D";
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -111,18 +132,18 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
-            FlatButton(
+            /*  FlatButton(
               child: Text("Open new roter"),
               textColor: Colors.blue,
               colorBrightness: Brightness.dark,
               onPressed: () {
-                /*  Navigator.push(
+                */ /*  Navigator.push(
                     context,
                     new MaterialPageRoute(
                         builder: (context) {
                           return new NewRote();
                         },
-                        fullscreenDialog: true));*/
+                        fullscreenDialog: true));*/ /*
 
                 Navigator.pushNamed(context, "random_page");
               },
@@ -157,6 +178,41 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text("TextStyleTest"),
                 onPressed: () {
                   Navigator.pushNamed(context, "TextStyleTest");
+                }),
+            Text(icons,
+                style: TextStyle(
+                    fontFamily: "MaterialIcons",
+                    fontSize: 24.0,
+                    color: Colors.green)),
+            Switch(
+              value: _switchSelected,
+              onChanged: (value) {
+                setState(() {
+                  _switchSelected = value;
+                });
+              },
+            ),*/
+            TextField(
+              controller: _nameController,
+              onChanged: (string) {
+                print("onChange: $string");
+              },
+              decoration: InputDecoration(
+                  labelText: "用户名", prefixIcon: Icon(Icons.person)),
+            ),
+            TextField(
+                autofocus: true,
+                decoration: InputDecoration(
+                    labelText: "密码", prefixIcon: Icon(Icons.lock))),
+            FlatButton(
+                child: Text("RowPage"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "RowPage");
+                }),
+            FlatButton(
+                child: Text("FlexLayoutTestRoute"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "FlexLayoutTestRoute");
                 }),
           ],
         ),
@@ -524,4 +580,58 @@ class TextStyleTest extends StatelessWidget {
   }
 }
 
- 
+//线性布局Row Column
+class RowPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(
+          title: Text("线性布局"),
+        ),
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[Text("hello world"), Text("i m flod")],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                textDirection: TextDirection.rtl,
+                children: <Widget>[Text("hello world"), Text("i m flod")],
+              )
+            ],
+          ),
+        ));
+  }
+}
+
+class FlexLayoutTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Flex(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Expanded(
+                flex: 1,
+                child: Container(
+                  height: 80,
+                  color: Colors.blue,
+                )),
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 30,
+                color: Colors.amber,
+              ),
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
