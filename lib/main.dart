@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         "TextStyleTest": (context) => TextStyleTest(),
         "RowPage": (context) => RowPage(),
         "FlexLayoutTestRoute": (context) => FlexLayoutTestRoute(),
+        "ScrollableTest": (context) => ScrollableTest(),
       },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -214,6 +215,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, "FlexLayoutTestRoute");
                 }),
+            FlatButton(
+                child: Text("ScrollableTest"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "ScrollableTest");
+                }),
           ],
         ),
       ),
@@ -243,7 +249,7 @@ class NewRote extends StatelessWidget {
 class RandomWordWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final word = new WordPair.random();
+    final word = new WordPair.random(maxSyllables: 100 * 100 * 100);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: new Text(word.toString()),
@@ -633,5 +639,29 @@ class FlexLayoutTestRoute extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+class ScrollableTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.all(16),
+      child: Center(
+        child: Row(
+          verticalDirection: VerticalDirection.down,
+          children: str.split("").map((c)=>Text(c,textScaleFactor: 2,)).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class ListViewTest extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return null;
   }
 }
