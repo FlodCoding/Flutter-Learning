@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,6 +35,20 @@ class MyApp extends StatelessWidget {
         "ParentWidgetC": (context) => ParentWidgetC(),
         "CupertinoTestRoute": (context) => CupertinoTestRoute(),
         "TextStyleTest": (context) => TextStyleTest(),
+        "RowPage": (context) => RowPage(),
+        "FlexLayoutTestRoute": (context) => FlexLayoutTestRoute(),
+        "ScrollableTest": (context) => ScrollableTest(),
+        "ListViewTest": (context) => ListViewTest(),
+        "InfiniteListTest": (context) => InfiniteListTest(),
+        "CustomScrollViewTestRoute": (context) => CustomScrollViewTestRoute(),
+        "ThemeTestRoute": (context) => ThemeTestRoute(),
+        "GestureDetectorTestRoute": (context) => GestureDetectorTestRoute(),
+        "_Drag": (context) => _Drag(),
+        "_DragVertical": (context) => _DragVertical(),
+        "ScaleTestRoute": (context) => ScaleTestRoute(),
+        "FileOperationRoute": (context) => FileOperationRoute(),
+        "HttpTestRoute": (context) => HttpTestRoute(),
+        "DioTestPage": (context) => DioTestPage(),
       },
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -58,6 +77,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  bool _switchSelected = true; //维护单选开关状态
+  bool _checkboxSelected = true; //维护复选框状态
+
+  TextEditingController _nameController = new TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -71,6 +94,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _nameController.addListener(() {
+      // print(_nameController.text);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
@@ -78,6 +110,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    String icons = "";
+    icons += "\uE914";
+// error: &#xE000; or 0xE000 or E000
+    icons += " \uE000";
+// fingerprint: &#xE90D; or 0xE90D or E90D
+    icons += " \uE90D";
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -87,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        child: SingleChildScrollView(
           // Column is also layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -102,27 +140,30 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            FlatButton(
+          scrollDirection: Axis.vertical,
+
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'You have pushed the button this many times:',
+                ),
+                Text(
+                  '$_counter',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+                /*  FlatButton(
               child: Text("Open new roter"),
               textColor: Colors.blue,
               colorBrightness: Brightness.dark,
               onPressed: () {
-                /*  Navigator.push(
+                */ /*  Navigator.push(
                     context,
                     new MaterialPageRoute(
                         builder: (context) {
                           return new NewRote();
                         },
-                        fullscreenDialog: true));*/
+                        fullscreenDialog: true));*/ /*
 
                 Navigator.pushNamed(context, "random_page");
               },
@@ -158,15 +199,104 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, "TextStyleTest");
                 }),
-
-            Image(
-              image: AssetImage("images/avatar.png"),
-              width: 100,
+            Text(icons,
+                style: TextStyle(
+                    fontFamily: "MaterialIcons",
+                    fontSize: 24.0,
+                    color: Colors.green)),
+            Switch(
+              value: _switchSelected,
+              onChanged: (value) {
+                setState(() {
+                  _switchSelected = value;
+                });
+              },
+            ),*/
+                /*   TextField(
+                  controller: _nameController,
+                  onChanged: (string) {
+                    print("onChange: $string");
+                  },
+                  decoration: InputDecoration(
+                      labelText: "用户名", prefixIcon: Icon(Icons.person)),
+                ),
+                TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                        labelText: "密码", prefixIcon: Icon(Icons.lock))),*/
+                FlatButton(
+                    child: Text("RowPage"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "RowPage");
+                    }),
+                FlatButton(
+                    child: Text("FlexLayoutTestRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "FlexLayoutTestRoute");
+                    }),
+                FlatButton(
+                    child: Text("ScrollableTest"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "ScrollableTest");
+                    }),
+                FlatButton(
+                    child: Text("ListViewTest"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "ListViewTest");
+                    }),
+                FlatButton(
+                    child: Text("InfiniteListTest"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "InfiniteListTest");
+                    }),
+                FlatButton(
+                    child: Text("CustomScrollViewTestRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "CustomScrollViewTestRoute");
+                    }),
+                FlatButton(
+                    child: Text("ThemeTestRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "ThemeTestRoute");
+                    }),
+                FlatButton(
+                    child: Text("GestureDetectorTestRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "GestureDetectorTestRoute");
+                    }),
+                FlatButton(
+                    child: Text("_Drag"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "_Drag");
+                    }),
+                FlatButton(
+                    child: Text("_DragVertical"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "_DragVertical");
+                    }),
+                FlatButton(
+                    child: Text("ScaleTestRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "ScaleTestRoute");
+                    }),
+                FlatButton(
+                    child: Text("FileOperationRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "FileOperationRoute");
+                    }),
+                FlatButton(
+                    child: Text("HttpTestRoute"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "HttpTestRoute");
+                    }),
+                FlatButton(
+                    child: Text("DioTestPage"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "DioTestPage");
+                    }),
+              ],
             ),
-            
-            Image.network("https://avatars2.githubusercontent.com/u/20411648?s=460&v=4",
-        width: 100.0,)
-          ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -195,7 +325,7 @@ class NewRote extends StatelessWidget {
 class RandomWordWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final word = new WordPair.random();
+    final word = new WordPair.random(maxSyllables: 100 * 100 * 100);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: new Text(word.toString()),
@@ -532,4 +662,631 @@ class TextStyleTest extends StatelessWidget {
   }
 }
 
- 
+//线性布局Row Column
+class RowPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: AppBar(
+          title: Text("线性布局"),
+        ),
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[Text("hello world"), Text("i m flod")],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                textDirection: TextDirection.rtl,
+                children: <Widget>[Text("hello world"), Text("i m flod")],
+              )
+            ],
+          ),
+        ));
+  }
+}
+
+class FlexLayoutTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Flex(
+          direction: Axis.horizontal,
+          children: <Widget>[
+            Expanded(
+                flex: 1,
+                child: Container(
+                  height: 80,
+                  color: Colors.blue,
+                )),
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 30,
+                color: Colors.amber,
+              ),
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class ScrollableTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.all(16),
+      child: Center(
+        child: Row(
+          verticalDirection: VerticalDirection.down,
+          children: str
+              .split("")
+              .map((c) => Text(
+                    c,
+                    textScaleFactor: 2,
+                  ))
+              .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class ListViewTest extends StatelessWidget {
+  Widget divider = Divider(color: Colors.lightGreen);
+  Widget divider2 = Divider(color: Colors.blue);
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: ListView.separated(
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Text("$index"),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return index % 2 == 0 ? divider : divider2;
+          },
+          itemCount: 100),
+    );
+  }
+}
+
+class InfiniteListTest extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _InfiniteListTestState();
+  }
+}
+
+class _InfiniteListTestState extends State<InfiniteListTest> {
+  static const loadingTag = "##loading##"; //表尾标记
+  var _words = <String>[loadingTag];
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: ListView.separated(
+          itemBuilder: (context, index) {
+            //如果到了表尾
+            if (_words[index] == loadingTag) {
+              //不足100条，继续获取数据
+              if (_words.length - 1 < 100) {
+                //获取数据
+                _retrieveData();
+                //加载时显示loading
+                return Container(
+                  padding: const EdgeInsets.all(16.0),
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                      width: 24.0,
+                      height: 24.0,
+                      child: CircularProgressIndicator(strokeWidth: 2.0)),
+                );
+              } else {
+                //已经加载了100条数据，不再获取数据。
+                return Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "没有更多了",
+                      style: TextStyle(color: Colors.grey),
+                    ));
+              }
+            }
+            //显示单词列表项
+            return ListTile(title: Text(_words[index]));
+          },
+          separatorBuilder: (context, index) => Divider(height: .0),
+          itemCount: _words.length),
+    );
+  }
+
+  void _retrieveData() {
+    Future.delayed(Duration(seconds: 2)).then((e) {
+      _words.insertAll(
+          //从##loading## 前面插入
+          _words.length - 1,
+          //每次生成20个单词
+          generateWordPairs().take(20).map((e) => e.asPascalCase).toList());
+      setState(() {
+        //重新构建列表
+      });
+    });
+  }
+}
+
+class CustomScrollViewTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            title: Text("sss"),
+            centerTitle: true,
+            pinned: true,
+            expandedHeight: 250.0,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.pin,
+              background: Image.asset(
+                "./images/avatar.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
+          SliverPadding(
+            padding: const EdgeInsets.all(8.0),
+            sliver: new SliverGrid(
+              //Grid
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, //Grid按两列显示
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 4.0,
+              ),
+              delegate: new SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  //创建子widget
+                  return new Container(
+                    alignment: Alignment.center,
+                    color: Colors.cyan[100 * (index % 9)],
+                    child: new Text('grid item $index'),
+                  );
+                },
+                childCount: 20,
+              ),
+            ),
+          ),
+
+          //List
+          new SliverFixedExtentList(
+            itemExtent: 50.0,
+            delegate: new SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+              //创建列表项
+              return new Container(
+                alignment: Alignment.center,
+                color: Colors.lightBlue[100 * (index % 9)],
+                child: new Text('list item $index'),
+              );
+            }, childCount: 50 //50个列表项
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ThemeTestRoute extends StatefulWidget {
+  @override
+  _ThemeTestRouteState createState() => new _ThemeTestRouteState();
+}
+
+class _ThemeTestRouteState extends State<ThemeTestRoute> {
+  Color _themeColor = Colors.teal; //当前路由主题色
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    return Theme(
+      data: ThemeData(
+          primarySwatch: _themeColor, //用于导航栏、FloatingActionButton的背景色等
+          iconTheme: IconThemeData(color: _themeColor) //用于Icon颜色
+          ),
+      child: Scaffold(
+        appBar: AppBar(title: Text("主题测试")),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            //第一行Icon使用主题中的iconTheme
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Icon(Icons.favorite),
+              Icon(Icons.airport_shuttle),
+              Text("  颜色跟随主题")
+            ]),
+            //为第二行Icon自定义颜色（固定为黑色)
+            Theme(
+              data: themeData.copyWith(
+                iconTheme: themeData.iconTheme.copyWith(color: Colors.black),
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.favorite),
+                    Icon(Icons.airport_shuttle),
+                    Text("  颜色固定黑色")
+                  ]),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () => //切换主题
+                setState(() => _themeColor =
+                    _themeColor == Colors.teal ? Colors.blue : Colors.teal),
+            child: Icon(Icons.palette)),
+      ),
+    );
+  }
+}
+
+class GestureDetectorTestRoute extends StatefulWidget {
+  @override
+  _GestureDetectorTestRouteState createState() =>
+      new _GestureDetectorTestRouteState();
+}
+
+class _GestureDetectorTestRouteState extends State<GestureDetectorTestRoute> {
+  String _operation = "No Gesture detected!"; //保存事件名
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: GestureDetector(
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.blue,
+            width: 200.0,
+            height: 100.0,
+            child: Text(
+              _operation,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          onTap: () => updateText("Tap"), //点击
+          onDoubleTap: () => updateText("DoubleTap"), //双击
+          onLongPress: () => updateText("LongPress"), //长按
+        ),
+      ),
+    );
+  }
+
+  void updateText(String text) {
+    //更新显示的事件名
+    setState(() {
+      _operation = text;
+    });
+  }
+}
+
+class _Drag extends StatefulWidget {
+  @override
+  _DragState createState() => new _DragState();
+}
+
+class _DragState extends State<_Drag> with SingleTickerProviderStateMixin {
+  double _top = 100; //距顶部的偏移
+  double _left = 100; //距左边的偏移
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: _top,
+          left: _left,
+          child: GestureDetector(
+            child: CircleAvatar(child: Text("A")),
+            //手指按下时会触发此回调
+            onPanDown: (DragDownDetails e) {
+              //打印手指按下的位置(相对于屏幕)
+              print("用户手指按下：${e.globalPosition}");
+            },
+            //手指滑动时会触发此回调
+            onPanUpdate: (DragUpdateDetails e) {
+              //用户手指滑动时，更新偏移，重新构建
+              setState(() {
+                _left += e.delta.dx;
+                _top += e.delta.dy;
+              });
+            },
+            onPanEnd: (DragEndDetails e) {
+              //打印滑动结束时在x、y轴上的速度
+              print(e.velocity);
+            },
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _DragVertical extends StatefulWidget {
+  @override
+  _DragVerticalState createState() => new _DragVerticalState();
+}
+
+class _DragVerticalState extends State<_DragVertical> {
+  double _top = 200;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: _top,
+          child: GestureDetector(
+              child: CircleAvatar(child: Text("A")),
+              //垂直方向拖动事件
+              onVerticalDragUpdate: (DragUpdateDetails details) {
+                setState(() {
+                  _top += details.delta.dy;
+                });
+              }),
+        )
+      ],
+    );
+  }
+}
+
+class ScaleTestRoute extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _ScaleTestRouteState();
+  }
+}
+
+class _ScaleTestRouteState extends State<ScaleTestRoute> {
+  double _width = 300.0; //通过修改图片宽度来达到缩放效果
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        //指定宽度，高度自适应
+        child: Image.asset("./images/img2.png", width: _width),
+        onScaleUpdate: (ScaleUpdateDetails details) {
+          setState(() {
+            //缩放倍数在0.8到10倍之间
+            _width = 300 * details.scale.clamp(.8, 10.0);
+          });
+        },
+      ),
+    );
+  }
+}
+
+typedef void EventCallback(arg);
+
+class EventBus {
+  //私有构造函数
+  EventBus._internal();
+
+  //保存单例
+  static EventBus _singleton = new EventBus._internal();
+
+  //工厂构造函数
+  factory EventBus() => _singleton;
+
+  //保存事件订阅者队列，key:事件名(id)，value: 对应事件的订阅者队列
+  var _emap = new Map<Object, List<EventCallback>>();
+
+  //添加订阅者
+  void on(eventName, EventCallback f) {
+    if (eventName == null || f == null) return;
+    _emap[eventName] ??= new List<EventCallback>();
+    _emap[eventName].add(f);
+  }
+
+  //移除订阅者
+  void off(eventName, [EventCallback f]) {
+    var list = _emap[eventName];
+    if (eventName == null || list == null) return;
+    if (f == null) {
+      _emap[eventName] = null;
+    } else {
+      list.remove(f);
+    }
+  }
+
+  //触发事件，事件触发后该事件所有订阅者会被调用
+  void emit(eventName, [arg]) {
+    var list = _emap[eventName];
+    if (list == null) return;
+    int len = list.length - 1;
+    //反向遍历，防止在订阅者在回调中移除自身带来的下标错位
+    for (var i = len; i > -1; --i) {
+      list[i](arg);
+    }
+  }
+}
+
+class FileOperationRoute extends StatefulWidget {
+  FileOperationRoute({Key key}) : super(key: key);
+
+  @override
+  _FileOperationRouteState createState() => new _FileOperationRouteState();
+}
+
+class _FileOperationRouteState extends State<FileOperationRoute> {
+  int _counter;
+
+  @override
+  void initState() {
+    super.initState();
+    //从文件读取点击次数
+    _readCounter().then((int value) {
+      setState(() {
+        _counter = value;
+      });
+    });
+  }
+
+  Future<File> _getLocalFile() async {
+    // 获取应用目录
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    return new File('$dir/counter.txt');
+  }
+
+  Future<int> _readCounter() async {
+    try {
+      File file = await _getLocalFile();
+      // 读取点击次数（以字符串）
+      String contents = await file.readAsString();
+      return int.parse(contents);
+    } on FileSystemException {
+      return 0;
+    }
+  }
+
+  Future<Null> _incrementCounter() async {
+    setState(() {
+      _counter++;
+    });
+    // 将点击次数以字符串类型写到文件中
+    await (await _getLocalFile()).writeAsString('$_counter');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(title: new Text('文件操作')),
+      body: new Center(
+        child: new Text('点击了 $_counter 次'),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: new Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class HttpTestRoute extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _HttpTestRouteState();
+  }
+}
+
+class _HttpTestRouteState extends State<HttpTestRoute> {
+  bool _loading = false;
+  String _string = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('_HttpTestRouteState'),
+      ),
+      body: new Center(
+          child: ConstrainedBox(
+        constraints: BoxConstraints.expand(),
+        child: Column(
+          children: <Widget>[
+            RaisedButton(
+                child: Text("获取"),
+                onPressed: _loading
+                    ? null
+                    : () async {
+                        setState(() {
+                          _loading = true;
+                          _string = "正在请求";
+                        });
+
+                        try {
+                          HttpClient client = new HttpClient();
+                          HttpClientRequest request = await client
+                              .getUrl(Uri.parse("https://www.baidu.com"));
+                          request.headers.add("user-agent",
+                              "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1");
+                          HttpClientResponse response = await request.close();
+
+                          _string =
+                              await response.transform(utf8.decoder).join();
+                          print(response.headers);
+                          //关闭client后，通过该client发起的所有请求都会中止。
+                          client.close();
+                        } catch (e) {
+                          ;
+                          _string = "请求失败：$e";
+                        } finally {
+                          setState(() {
+                            _loading = false;
+                          });
+                        }
+                      }),
+            Container(
+                width: MediaQuery.of(context).size.width - 50.0,
+                child: Text(_string.replaceAll(new RegExp(r"\s"), "")))
+          ],
+        ),
+      )),
+    );
+  }
+}
+
+class DioTestPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _DioTestPageState();
+  }
+}
+
+class _DioTestPageState extends State<DioTestPage> {
+  String str = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: Text("DioTestPage"),
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: <Widget>[
+            FlatButton(
+              color: Colors.blue,
+              child: Text("getBaidu"),
+              onPressed: () async {
+                try {
+                  Response resonese = await Dio().get("http://www.baidu.com");
+                  setState(() {
+                    str = resonese.toString();
+                  });
+                } catch (e) {
+                  print(e);
+                }
+              },
+            ),
+            Text(str)
+          ],
+        ),
+      ),
+    );
+  }
+}
